@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuis Interaktif - Toko Mainan Ceria (Formatif 1)</title>
+    <title>Penilaian Formatif 1 - Toko Mainan Ceria</title>
     <style>
         :root {
             --primary-color: #1a365d;
@@ -92,8 +92,9 @@
         }
 
         .media-box svg {
-            max-width: 180px;
+            max-width: 220px;
             height: auto;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
         }
 
         /* Forms & Inputs */
@@ -137,6 +138,7 @@
         .nav-buttons {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-top: 25px;
         }
 
@@ -153,7 +155,53 @@
         .btn-primary { background: var(--primary-color); color: white; }
         .btn-secondary { background: #718096; color: white; }
         .btn-danger { background: #e53e3e; color: white; }
+        .btn-palette { background: #ed8936; color: white; }
         .btn:disabled { background: #cbd5e0; cursor: not-allowed; }
+
+        /* MODAL POPUP PALET NAVIGASI SOAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .palette-btn {
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid #cbd5e0;
+            cursor: pointer;
+            background: #f7fafc;
+        }
+        .palette-btn.active {
+            border-color: #2b6cb0;
+            background: #ebf8ff;
+            color: #2b6cb0;
+        }
+        .palette-btn.answered {
+            background: #38a169;
+            color: white;
+            border-color: #38a169;
+        }
 
         /* Result styling */
         .result-card {
@@ -168,13 +216,13 @@
         }
     </style>
 </head>
-<body>
+<body onclick="initAudioContext()">
 
     <header>
-        <h2>Kuis Matematika Interaktif</h2>
+        <h2>Penilaian Formatif 1: Matematika</h2>
         <div class="audio-controls">
-            <button id="btn-bgm" onclick="toggleBGM()">🎵 Musik: OFF</button>
-            <button id="btn-vo" onclick="toggleVO()">🔊 Suara/VO: ON</button>
+            <button id="btn-bgm" onclick="toggleBGM(event)">🎵 Musik: OFF</button>
+            <button id="btn-vo" onclick="toggleVO(event)">🔊 Suara/VO: ON</button>
             <button class="btn-portal" onclick="openTeacherPortal()">🔑 Portal Guru</button>
         </div>
     </header>
@@ -182,17 +230,17 @@
     <div class="container">
         <!-- STEP 1: IDENTITAS SISWA -->
         <div id="screen-intro">
-            <h2>Formatif 1: Penjualan Toko Mainan Ceria</h2>
-            <p style="margin-top: 5px; color: #4a5568;">Isi data diri Anda terlebih dahulu untuk memulai pengerjaan.</p>
+            <h2>SOAL PENILAIAN FORMATIF 1</h2>
+            <p style="margin-top: 5px; color: #4a5568;">Petunjuk: Bacalah dengan cermat dan gunakan data dalam bacaan untuk memecahkan kasus dengan tepat dan logis!</p>
             <br>
             <form onsubmit="startQuiz(event)">
                 <label for="student-name"><b>Nama Lengkap Siswa:</b></label>
                 <input type="text" id="student-name" required placeholder="Masukkan nama Anda...">
                 
                 <label for="student-class"><b>Kelas / No. Absen:</b></label>
-                <input type="text" id="student-class" required placeholder="Contoh: 7A / 12">
+                <input type="text" id="student-class" required placeholder="Contoh: 5A / 12">
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Mulai Mengerjakan Kuis</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Mulai Mengerjakan Formatif 1</button>
             </form>
         </div>
 
@@ -222,25 +270,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Senin</td><td>1.250</td><td>125.000</td></tr>
-                        <tr><td>Selasa</td><td>2.150</td><td>215.000</td></tr>
-                        <tr><td>Rabu</td><td>1.800</td><td>180.000</td></tr>
-                        <tr><td>Kamis</td><td>2.350</td><td>235.000</td></tr>
-                        <tr><td>Jumat</td><td>1.900</td><td>190.000</td></tr>
+                        <tr><td>Senin</td><td>125</td><td>12.500</td></tr>
+                        <tr><td>Selasa</td><td>215</td><td>21.500</td></tr>
+                        <tr><td>Rabu</td><td>180</td><td>18.000</td></tr>
+                        <tr><td>Kamis</td><td>235</td><td>23.500</td></tr>
+                        <tr><td>Jumat</td><td>190</td><td>19.000</td></tr>
                     </tbody>
                 </table>
                 <p>Pemilik toko ingin mengetahui perkembangan penjualan agar dapat menentukan strategi promosi minggu berikutnya.</p>
             </div>
 
-            <!-- SVG Visual Animasi Ilustrasi -->
+            <!-- SVG Visual Animasi Ilustrasi Mainan Menarik -->
             <div class="media-box" id="media-container"></div>
 
             <div id="question-container"></div>
 
             <div class="nav-buttons">
                 <button id="btn-prev" class="btn btn-secondary" onclick="prevQuestion()">Sebelumnya</button>
+                <button class="btn btn-palette" onclick="openPaletteModal()">📌 Navigasi Soal</button>
                 <button id="btn-next" class="btn btn-primary" onclick="nextQuestion()">Selanjutnya</button>
                 <button id="btn-finish" class="btn btn-primary hidden" onclick="confirmFinish()">Selesai & Kirim</button>
+            </div>
+        </div>
+
+        <!-- MODAL PALET NAVIGASI SOAL -->
+        <div id="modal-palette" class="modal-overlay hidden">
+            <div class="modal-card">
+                <h3>📌 Navigasi Nomor Soal</h3>
+                <p style="font-size: 0.85rem; color: #718096; margin-top: 5px;">Pilih nomor soal untuk langsung berpindah halaman:</p>
+                <div class="palette-grid" id="palette-grid">
+                    <!-- Buttons rendered dynamically -->
+                </div>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="closePaletteModal()">Tutup</button>
             </div>
         </div>
 
@@ -248,10 +309,11 @@
         <div id="screen-result" class="hidden">
             <div class="result-card">
                 <h2>Hasil Penilaian Formatif 1</h2>
-                <p>Terima kasih telah menyelesaikan kuis ini!</p>
+                <p>Terima kasih telah menyelesaikan penilaian formatif ini!</p>
                 
                 <div class="score-display" id="final-score">0</div>
                 <p id="final-category" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;"></p>
+                <p id="detail-score-breakdown" style="font-size: 0.95rem; color: #4a5568; margin-bottom: 10px;"></p>
                 <p id="final-time"></p>
                 
                 <hr style="margin: 20px 0;">
@@ -265,8 +327,8 @@
 
         <!-- STEP 4: PORTAL GURU (REKAP DATA) -->
         <div id="screen-teacher" class="hidden">
-            <h2>🔑 Portal Guru - Rekapitulasi Data Hasil Kuis (Formatif 1)</h2>
-            <p style="margin-bottom: 15px;">Data nilai seluruh siswa yang telah menyelesaikan kuis:</p>
+            <h2>🔑 Portal Guru - Rekapitulasi Data Hasil Penilaian Formatif 1</h2>
+            <p style="margin-bottom: 15px;">Data nilai seluruh siswa yang telah menyelesaikan penilaian formatif:</p>
 
             <button class="btn btn-primary" onclick="downloadExcel()" style="margin-bottom: 15px;">📥 Unduh Data Rekap (Excel/CSV)</button>
             <button class="btn btn-secondary" onclick="clearData()" style="margin-bottom: 15px; background: #c53030;">🗑 Hapus Semua Data Browser</button>
@@ -292,58 +354,91 @@
             </div>
 
             <br>
-            <button class="btn btn-secondary" onclick="closeTeacherPortal()">Kembali ke Kuis</button>
+            <button class="btn btn-secondary" onclick="closeTeacherPortal()">Kembali ke Soal</button>
         </div>
     </div>
 
     <script>
         // URL GOOGLE APPS SCRIPT
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_EVEtgeJAkLGWCE9yTTI3EOIlV6J3wL_K2QZ0LcgHWZQgb1rm7TsiIfWBqlR28KHXQg/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCLoVVo5rlQ-YWNBE3tVevu3kjGXdpkyDo5NXRs98y6wP4jM-L7bWsczkO2JQ8dUNXqA/exec";
 
         // SANDI PORTAL GURU
         const TEACHER_PASS = "GuruCerdas#2026!Math";
 
-        // DATA SOAL (SESUAI NASKAH F2 REVISI)
+        // DATA SOAL DENGAN ILUSTRASI MAINAN MENARIK (SVG MOBIL, ROBOT, BALOK/KELERENG, BOX KADO)
         const quizData = [
             {
                 type: 'pgk',
-                prompt: "Perhatikan data penjualan Toko Mainan Ceria dari hari Senin hingga Jumat pada tabel data di atas.",
+                prompt: "Perhatikan data penjualan Toko Mainan Ceria dari hari Senin hingga Jumat pada tabel di atas.",
                 statements: [
                     { id: '1a', text: "a. Pola penjualan mainan dari Senin ke Jumat cenderung meningkat terus setiap harinya.", key: "Salah" },
-                    { id: '1b', text: "b. Penjualan tertinggi terjadi pada hari Kamis dengan 2.350 mainan.", key: "Benar" },
+                    { id: '1b', text: "b. Penjualan tertinggi terjadi pada hari Kamis dengan 235 mainan.", key: "Benar" },
                     { id: '1c', text: "c. Contoh transaksi yang melibatkan penjumlahan bilangan serupa adalah menjumlahkan 1.500 lembar kertas dan 300 lembar kertas tambahan menjadi 1.800 lembar.", key: "Benar" },
                     { id: '1d', text: "d. Pola penjualan yang naik-turun seperti ini disebut pola penjualan yang stabil.", key: "Salah" }
                 ],
-                svg: `<svg viewBox="0 0 100 100"><path d="M10 80 L30 60 L50 30 L70 50 L90 20" fill="none" stroke="#2b6cb0" stroke-width="4"/><circle cx="50" cy="30" r="5" fill="#ed8936"/></svg>`
+                // ILUSTRASI MAINAN 1: MOBIL REMOTE CONTROL / BALAP KEREN
+                svg: `<svg viewBox="0 0 120 70">
+                    <rect x="25" y="25" width="70" height="25" rx="10" fill="#e53e3e"/>
+                    <path d="M40 25 L50 10 L70 10 L80 25 Z" fill="#3182ce"/>
+                    <circle cx="38" cy="50" r="10" fill="#2d3748"/><circle cx="38" cy="50" r="4" fill="#cbd5e0"/>
+                    <circle cx="82" cy="50" r="10" fill="#2d3748"/><circle cx="82" cy="50" r="4" fill="#cbd5e0"/>
+                    <circle cx="95" cy="30" r="3" fill="#ecc94b"/>
+                </svg>`
             },
             {
                 type: 'pgk',
-                prompt: "Kelompokkan hari-hari berdasarkan jumlah mainan yang terjual (di bawah atau di atas 2.000).",
+                prompt: "Kelompokkan hari-hari berdasarkan jumlah mainan yang terjual (dibawah atau diatas 200).",
                 statements: [
-                    { id: '2a', text: "a. Hari Selasa dan Kamis termasuk kelompok penjualan di atas 2.000 unit.", key: "Benar" },
-                    { id: '2b', text: "b. Hari Senin, Rabu, dan Jumat termasuk kelompok penjualan di bawah 2.000 unit.", key: "Benar" },
-                    { id: '2c', text: "c. Selisih penjualan hari Kamis dan Rabu adalah 2.350 − 1.800 = 550 mainan.", key: "Benar" },
+                    { id: '2a', text: "a. Hari Selasa dan Kamis termasuk kelompok penjualan di atas 200 unit.", key: "Benar" },
+                    { id: '2b', text: "b. Hari Senin, Rabu, dan Jumat termasuk kelompok penjualan di bawah 200 unit.", key: "Benar" },
+                    { id: '2c', text: "c. Selisih penjualan hari Kamis dan Rabu adalah 235 − 180 = 55 mainan.", key: "Benar" },
                     { id: '2d', text: "d. Penjualan hari Rabu lebih banyak dibandingkan hari Kamis.", key: "Salah" }
                 ],
-                svg: `<svg viewBox="0 0 100 100"><rect x="15" y="40" width="30" height="50" fill="#319795"/><rect x="55" y="20" width="30" height="70" fill="#2b6cb0"/><line x1="5" y1="90" x2="95" y2="90" stroke="#000" stroke-width="2"/></svg>`
+                // ILUSTRASI MAINAN 2: ROBOT MAINAN CANGGIH
+                svg: `<svg viewBox="0 0 100 100">
+                    <rect x="35" y="10" width="30" height="25" rx="4" fill="#3182ce"/>
+                    <circle cx="43" cy="20" r="4" fill="#ecc94b"/>
+                    <circle cx="57" cy="20" r="4" fill="#ecc94b"/>
+                    <line x1="50" y1="10" x2="50" y2="2" stroke="#e53e3e" stroke-width="3"/>
+                    <circle cx="50" cy="2" r="3" fill="#e53e3e"/>
+                    <rect x="30" y="40" width="40" height="35" rx="5" fill="#4a5568"/>
+                    <circle cx="50" cy="57" r="8" fill="#38a169"/>
+                    <rect x="15" y="42" width="12" height="25" rx="4" fill="#3182ce"/>
+                    <rect x="73" y="42" width="12" height="25" rx="4" fill="#3182ce"/>
+                    <rect x="34" y="78" width="12" height="18" fill="#2d3748"/>
+                    <rect x="54" y="78" width="12" height="18" fill="#2d3748"/>
+                </svg>`
             },
             {
                 type: 'pgk',
-                prompt: "Total penjualan mainan selama lima hari pertama (Senin−Jumat) dihitung dengan menjumlahkan seluruh mainan yang terjual: 1.250+2.150+1.800+2.350+1.900 = 9.450 mainan. Langkah yang sama juga digunakan untuk menghitung total pendapatan toko selama lima hari.",
+                prompt: "Total penjualan mainan selama lima hari pertama (Senin−Jumat) dihitung dengan menjumlahkan seluruh mainan yang terjual: 125+215+180+235+190 = 945 mainan. Langkah yang sama juga digunakan untuk menghitung total pendapatan toko selama lima hari.",
                 statements: [
-                    { id: '3a', text: "a. Kalimat ringkas yang tepat adalah 'Selama lima hari, toko berhasil menjual 9.450 mainan.'", key: "Benar" },
+                    { id: '3a', text: "a. Kalimat ringkas yang tepat adalah 'Selama lima hari, toko berhasil menjual 945 mainan.'", key: "Benar" },
                     { id: '3b', text: "b. Semakin banyak mainan yang terjual, semakin besar pendapatan yang diperoleh toko.", key: "Benar" },
-                    { id: '3c', text: "c. Langkah kedua adalah menjumlahkan seluruh pendapatan harian: 125.000+215.000+180.000+235.000+190.000.", key: "Benar" },
+                    { id: '3c', text: "c. Langkah kedua adalah menjumlahkan seluruh pendapatan harian: 12.500+21.500+18.000+23.500+19.000.", key: "Benar" },
                     { id: '3d', text: "d. Langkah yang tepat adalah mengalikan seluruh pendapatan harian, bukan menjumlahkannya.", key: "Salah" }
                 ],
-                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#38a169"/><text x="50" y="58" font-size="22" fill="#fff" text-anchor="middle" font-weight="bold">Rp</text></svg>`
+                // ILUSTRASI MAINAN 3: BALOK SUSUN & KELERENG WARNA-WARNI
+                svg: `<svg viewBox="0 0 100 90">
+                    <rect x="10" y="50" width="30" height="30" rx="3" fill="#e53e3e"/>
+                    <rect x="45" y="50" width="30" height="30" rx="3" fill="#ecc94b"/>
+                    <rect x="27" y="15" width="30" height="30" rx="3" fill="#38a169"/>
+                    <circle cx="85" cy="70" r="8" fill="#805ad5"/>
+                    <circle cx="85" cy="45" r="6" fill="#3182ce"/>
+                </svg>`
             },
             {
                 type: 'uraian',
-                prompt: "Pada hari Sabtu, Toko Mainan Ceria menargetkan penjualan 2.500 mainan dengan pendapatan Rp250.000,00. Namun, hasil penjualan menunjukkan hanya 2.180 mainan dengan pendapatan Rp218.000,00. Berapa selisih jumlah mainan dan selisih pendapatan antara target dan hasil penjualan toko tersebut?",
-                placeholder: "Tuliskan langkah perhitungan dan hasil selisih mainan serta selisih pendapatannya...",
-                keyKeywords: ["320", "32.000", "32000", "32 rb"],
-                svg: `<svg viewBox="0 0 100 100"><path d="M20 70 L50 20 L80 70 Z" fill="#dd6b20"/><text x="50" y="60" font-size="16" fill="#fff" text-anchor="middle" font-weight="bold">Δ</text></svg>`
+                prompt: "Pada hari Sabtu, Toko Mainan Ceria menargetkan penjualan 250 mainan dengan pendapatan Rp25.000,00. Namun, hasil penjualan menunjukkan hanya 218 mainan dengan pendapatan Rp21.800,00. Berapa selisih jumlah mainan dan selisih pendapatan antara target dan hasil penjualan toko tersebut?",
+                placeholder: "Tuliskan langkah pengerjaan (diketahui, ditanya, jawab, kesimpulan)...",
+                // ILUSTRASI MAINAN 4: KOTAK KADO MAINAN CERIA
+                svg: `<svg viewBox="0 0 100 100">
+                    <rect x="20" y="35" width="60" height="50" rx="4" fill="#dd6b20"/>
+                    <rect x="15" y="25" width="70" height="12" rx="3" fill="#ed8936"/>
+                    <rect x="45" y="25" width="10" height="60" fill="#ecc94b"/>
+                    <path d="M35 15 C25 5, 45 5, 47 25 Z" fill="#ecc94b"/>
+                    <path d="M65 15 C75 5, 55 5, 53 25 Z" fill="#ecc94b"/>
+                </svg>`
             }
         ];
 
@@ -358,19 +453,20 @@
         let audioCtx;
         let bgmNoteIndex = 0;
 
-        // BGM Audio Engine (Semangat / Suasana Kompetisi)
-        // Melodi Arpeggio Cepat & Energik (C Minor / Up-beat Rhythm)
         const upbeatNotes = [261.63, 311.13, 392.00, 523.25, 392.00, 311.13, 349.23, 440.00];
+
+        function initAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
 
         function playBGM() {
             if (!bgmOn) return;
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            initAudioContext();
             
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             
-            // Menggunakan gelombang 'sawtooth' agar menghasilkan suara khas gim/kompetisi yang energik
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(upbeatNotes[bgmNoteIndex % upbeatNotes.length], audioCtx.currentTime);
             
@@ -384,16 +480,18 @@
             osc.stop(audioCtx.currentTime + 0.15);
 
             bgmNoteIndex++;
-            if (bgmOn) setTimeout(playBGM, 180); // Tempo cepat (180ms)
+            if (bgmOn) setTimeout(playBGM, 180);
         }
 
-        function toggleBGM() {
+        function toggleBGM(e) {
+            if (e) e.stopPropagation();
             bgmOn = !bgmOn;
             document.getElementById('btn-bgm').innerText = `🎵 Musik: ${bgmOn ? 'ON' : 'OFF'}`;
             if (bgmOn) playBGM();
         }
 
-        function toggleVO() {
+        function toggleVO(e) {
+            if (e) e.stopPropagation();
             voOn = !voOn;
             document.getElementById('btn-vo').innerText = `🔊 Suara/VO: ${voOn ? 'ON' : 'OFF'}`;
             if (!voOn && window.speechSynthesis) window.speechSynthesis.cancel();
@@ -432,9 +530,13 @@
 
         function startQuiz(e) {
             e.preventDefault();
-            let name = document.getElementById('student-name').value;
-            let cls = document.getElementById('student-class').value;
+            let name = document.getElementById('student-name').value.trim();
+            let cls = document.getElementById('student-class').value.trim();
+            
+            if (!name || !cls) return alert("Harap isi Nama dan Kelas/Absen!");
+
             currentStudent = { name, class: cls };
+            studentAnswers = {};
 
             document.getElementById('screen-intro').classList.add('hidden');
             document.getElementById('screen-quiz').classList.remove('hidden');
@@ -477,7 +579,7 @@
                 let ans = studentAnswers[`uraian_${currentIdx}`] || '';
                 html += `
                     <label><b>Jawaban / Langkah Penyelesaian Anda:</b></label>
-                    <textarea id="input-uraian" rows="4" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:1px solid #ccc;" placeholder="${q.placeholder}" oninput="saveAnswer('uraian_${currentIdx}', this.value)">${ans}</textarea>
+                    <textarea id="input-uraian" rows="5" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:1px solid #ccc; font-size:1rem;" placeholder="${q.placeholder}" oninput="saveAnswer('uraian_${currentIdx}', this.value)">${ans}</textarea>
                 `;
             }
 
@@ -519,8 +621,44 @@
             }
         }
 
+        // NAVIGASI PALET MODAL LOGIC
+        function openPaletteModal() {
+            const paletteGrid = document.getElementById('palette-grid');
+            paletteGrid.innerHTML = '';
+            
+            quizData.forEach((q, idx) => {
+                let isAnswered = false;
+                if (q.type === 'pgk') {
+                    isAnswered = q.statements.some(st => studentAnswers[st.id]);
+                } else {
+                    isAnswered = studentAnswers[`uraian_${idx}`] && studentAnswers[`uraian_${idx}`].trim().length > 0;
+                }
+
+                let activeClass = (idx === currentIdx) ? 'active' : '';
+                let answeredClass = isAnswered ? 'answered' : '';
+
+                paletteGrid.innerHTML += `
+                    <button class="palette-btn ${activeClass} ${answeredClass}" onclick="jumpToQuestion(${idx})">
+                        ${idx + 1}
+                    </button>
+                `;
+            });
+
+            document.getElementById('modal-palette').classList.remove('hidden');
+        }
+
+        function closePaletteModal() {
+            document.getElementById('modal-palette').classList.add('hidden');
+        }
+
+        function jumpToQuestion(idx) {
+            currentIdx = idx;
+            closePaletteModal();
+            renderQuestion();
+        }
+
         function confirmFinish() {
-            if (confirm("Apakah Anda yakin ingin menyelesaikan kuis ini?")) {
+            if (confirm("Apakah Anda yakin ingin menyelesaikan penilaian formatif ini?")) {
                 clearInterval(timerInterval);
                 calculateResult();
             }
@@ -530,6 +668,7 @@
             let pgkScore = 0; // max 12
             let uraianScore = 0; // max 4
 
+            // Evaluasi PGK (Skor 1 per pernyataan)
             quizData.forEach((q) => {
                 if (q.type === 'pgk') {
                     q.statements.forEach((st) => {
@@ -540,18 +679,21 @@
                 }
             });
 
+            // Evaluasi Uraian Soal 4 (Rubrik 0-4 Poin Polya)
             quizData.forEach((q, idx) => {
                 if (q.type === 'uraian') {
                     let userAns = (studentAnswers[`uraian_${idx}`] || '').toLowerCase();
-                    let hasMainan = userAns.includes("320");
-                    let hasPendapatan = userAns.includes("32000") || userAns.includes("32.000") || userAns.includes("32 rb");
+                    let hasMainan = userAns.includes("32");
+                    let hasPendapatan = userAns.includes("3.200") || userAns.includes("3200") || userAns.includes("3,200") || userAns.includes("3 rb") || userAns.includes("3200 rupiah");
 
                     if (hasMainan && hasPendapatan) {
-                        uraianScore += 4;
+                        uraianScore = 4;
                     } else if (hasMainan || hasPendapatan) {
-                        uraianScore += 2;
+                        uraianScore = 2;
                     } else if (userAns.trim().length > 5) {
-                        uraianScore += 1;
+                        uraianScore = 1;
+                    } else {
+                        uraianScore = 0;
                     }
                 }
             });
@@ -580,17 +722,15 @@
                 date: new Date().toLocaleString("id-ID")
             };
 
-            let records = JSON.parse(localStorage.getItem('quiz_records_f2') || '[]');
+            let records = JSON.parse(localStorage.getItem('quiz_records_f1') || '[]');
             records.push(record);
-            localStorage.setItem('quiz_records_f2', JSON.stringify(records));
+            localStorage.setItem('quiz_records_f1', JSON.stringify(records));
 
-            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbyCLoVVo5rlQ-YWNBE3tVevu3kjGXdpkyDo5NXRs98y6wP4jM-L7bWsczkO2JQ8dUNXqA/exec") {
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.startsWith('http')) {
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(record)
                 }).catch(error => console.error('Error pengiriman ke Google Sheets:', error));
             }
@@ -600,6 +740,7 @@
 
             document.getElementById('final-score').innerText = nilaiAkhir;
             document.getElementById('final-category').innerText = `Kategori: ${kategori}`;
+            document.getElementById('detail-score-breakdown').innerText = `Rincian: Skor PGK = ${pgkScore}/12 | Skor Uraian = ${uraianScore}/4 (Total Skor: ${totalSkor}/16)`;
             document.getElementById('final-time').innerText = `Waktu Pengerjaan: ${timeFormatted}`;
         }
 
@@ -613,7 +754,7 @@
         }
 
         function exitQuiz() {
-            alert("Terima kasih sudah mengerjakan kuis!");
+            alert("Terima kasih sudah menyelesaikan penilaian formatif!");
             location.reload();
         }
 
@@ -636,19 +777,19 @@
         }
 
         function renderTeacherTable() {
-            let records = JSON.parse(localStorage.getItem('quiz_records_f2') || '[]');
+            let records = JSON.parse(localStorage.getItem('quiz_records_f1') || '[]');
             let tbody = document.getElementById('teacher-tbody');
             tbody.innerHTML = '';
 
             if (records.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="center-text">Belum ada data siswa pada browser ini.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="center-text">Belum ada data siswa tersimpan di browser ini.</td></tr>`;
                 return;
             }
 
             records.forEach((rec, idx) => {
                 let tr = `<tr>
                     <td>${idx + 1}</td>
-                    <td>${rec.name}</td>
+                    <td><b>${rec.name}</b></td>
                     <td>${rec.class}</td>
                     <td>${rec.time}</td>
                     <td>${rec.pgkScore} / 12</td>
@@ -661,29 +802,27 @@
         }
 
         function downloadExcel() {
-            let records = JSON.parse(localStorage.getItem('quiz_records_f2') || '[]');
-            if (records.length === 0) {
-                alert("Tidak ada data untuk diunduh!");
-                return;
-            }
+            let records = JSON.parse(localStorage.getItem('quiz_records_f1') || '[]');
+            if (records.length === 0) return alert("Tidak ada data untuk diunduh!");
 
-            let csvContent = "data:text/csv;charset=utf-8,No,Nama Siswa,Kelas,Waktu Pengerjaan,Skor PGK,Skor Uraian,Nilai Akhir,Kategori,Tanggal\n";
+            let csvContent = "\uFEFFNo,Nama Siswa,Kelas,Waktu Pengerjaan,Skor PGK (12),Skor Uraian (4),Nilai Akhir,Kategori,Tanggal\n";
             records.forEach((r, i) => {
                 csvContent += `${i+1},"${r.name}","${r.class}",${r.time},${r.pgkScore},${r.uraianScore},${r.finalScore},"${r.kategori}","${r.date}"\n`;
             });
 
-            let encodedUri = encodeURI(csvContent);
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
             let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Rekap_Nilai_Formatif_1_Revisi.csv");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Rekap_Nilai_Formatif_1_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         function clearData() {
-            if (confirm("Apakah Anda yakin ingin menghapus data rekap nilai Formatif 1 pada browser ini?")) {
-                localStorage.removeItem('quiz_records_f2');
+            if (confirm("Apakah Anda yakin ingin menghapus SELURUH rekap data Formatif 1 di browser ini?")) {
+                localStorage.removeItem('quiz_records_f1');
                 renderTeacherTable();
             }
         }
